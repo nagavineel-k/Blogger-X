@@ -1,0 +1,34 @@
+{
+  "name": "blogger",
+  "version": "1.0.0",
+  "description": "Blogger-X using MEAN Stack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js",
+    "start-server": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nagavineel-k/blogger-x.git"
+  },
+  "keywords": [
+    "Blogger-X",
+    "using",
+    "MEAN",
+    "Stack"
+  ],
+  "author": "Vineel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nagavineel-k/blogger-x/issues"
+  },
+  "homepage": "https://github.com/nagavineel-k/blogger-x#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.12.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
