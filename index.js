@@ -6,6 +6,7 @@ const config = require('./config/database');
 const path = require('path');
 const authentication = require('./routes/authentication')(router);
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 
@@ -18,6 +19,11 @@ mongoose.connect(config.uri, (err) => {
         console.log('Connection to database ' + config.db + ' is successfull....');
     }
 });
+
+//------------------ CORS -------------------------------->
+app.use(cors({
+    origin: 'http://localhost:4200'
+}));
 
 //------------------ Parse application --------------------------------------->
 app.use(express.urlencoded({ extended: false }));

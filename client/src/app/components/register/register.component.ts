@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { forkJoin } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -9,9 +12,18 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class RegisterComponent implements OnInit {
 
   form: FormGroup;
+  message: any;
+  messageClass: any;
+  processing: any = false;
+  emailValid: any;
+  emailMessage: any;
+  usernameValid: any;
+  usernameMessage: any;
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private registerService: AuthService,
+    private router: Router
   ) {
     this.createForm();
   }
@@ -50,6 +62,19 @@ export class RegisterComponent implements OnInit {
       ],
       confirm: ['', Validators.required]
     }, { validator: this.matchingPasswords('password', 'confirm') })
+  }
+
+  disableForm() {
+    this.form.controls['email'].disable();
+    this.form.controls['username'].disable();
+    this.form.controls['password'].disable();
+    this.form.controls['confirm'].disable();
+  }
+  enableForm() {
+    this.form.controls['email'].enable();
+    this.form.controls['username'].enable();
+    this.form.controls['password'].enable();
+    this.form.controls['confirm'].enable();
   }
 
   validateEmail(controls) {
@@ -97,7 +122,51 @@ export class RegisterComponent implements OnInit {
   }
 
   onRegisterSubmit() {
-    console.log('Form Submitted....')
+    this.processing = true;
+    this.disableForm();
+    const user = {
+      email: this.form.get('email').value,
+      username: this.form.get('username').value,
+      password: this.form.get('password').value
+    }
+
+    this.registerService.register(user).subscribe(response => {
+      if (!response.success) {
+        this.messageClass = 'alert alert-danger';
+        this.message = response.message;
+        this.processing = false;
+        this.enableForm();
+      } else {
+        this.messageClass = 'alert alert-success';
+        this.message = response.message;
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
+      }
+    });
+  }
+
+  checkEmail() {
+    this.registerService.checkEmail(this.form.get('email').value).subscribe(response => {
+      if (!response.success) {
+        this.emailValid = false;
+        this.emailMessage = response.message;
+      } else {
+        this.emailValid = true;
+        this.emailMessage = response.message;
+      }
+    })
+  }
+  checkUsername() {
+    this.registerService.checkUsername(this.form.get('username').value).subscribe(response => {
+      if (!response.success) {
+        this.usernameValid = false;
+        this.usernameMessage = response.message;
+      } else {
+        this.usernameValid = true;
+        this.usernameMessage = response.message;
+      }
+    })
   }
 
 }
